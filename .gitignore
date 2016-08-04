@@ -1,0 +1,7 @@
+*.exe
+
+*.ini
+
+# Binaries
+bin/*
+release/*
