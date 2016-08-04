@@ -1,0 +1,8 @@
+[uptime]
+uri = "http://youruptime/api"
+
+# http basic auth username
+username = ""
+
+# http basic auth pw
+password = ""
