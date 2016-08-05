@@ -56,9 +56,11 @@ func main() {
 		var ck interface{}
 		json.Unmarshal(*ch, &ck)
 		c := ck.(map[string]interface{})
+		uptimeName := c["name"].(string)
 		if c["isPaused"] != true {
-			uptimeName := c["name"].(string)
 			uptimeCheck[uptimeName] = c["_id"].(string)
+		} else {
+			uptimeCheck[uptimeName] = ""
 		}
 	}
 
@@ -79,7 +81,7 @@ func main() {
 			reqBody["name"] = label
 			reqBody["url"] = "http://" + node["host_public_ip"] + "/live/live.htm"
 			apiRequest("PUT", reqUri, reqBody)
-		} else {
+		} else if uptimeCheck[label] != "" {
 			// POST
 			fmt.Printf("U:%s\n", uptimeCheck[label])
 			reqUri := "checks/" + uptimeCheck[label]
