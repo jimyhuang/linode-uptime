@@ -6,3 +6,6 @@ username = ""
 
 # http basic auth pw
 password = ""
+
+# match string between js.match(/string/)
+match = "live"

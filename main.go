@@ -21,6 +21,7 @@ type configuration struct {
 	APIUri          string `gcfg:"uri"`
 	BasicAuthName   string `gcfg:"username"`
 	BasicAuthPasswd string `gcfg:"password"`
+	Match           string `gcfg:"match"`
 }
 type Inventory struct {
 	Meta  map[string]map[string]map[string]string `json:"_meta"`
@@ -80,6 +81,9 @@ func main() {
 			reqBody := makeReqBody()
 			reqBody["name"] = label
 			reqBody["url"] = "http://" + node["host_public_ip"] + "/live/live.htm"
+			if config.Match != "" {
+				reqBody["pollerParams"] = "{\"match\":\"/" + config.Match + "/\"}"
+			}
 			apiRequest("PUT", reqUri, reqBody)
 		} else if uptimeCheck[label] != "" {
 			// POST
@@ -88,6 +92,9 @@ func main() {
 			reqBody := makeReqBody()
 			reqBody["name"] = label
 			reqBody["url"] = "http://" + node["host_public_ip"] + "/live/live.htm"
+			if config.Match != "" {
+				reqBody["pollerParams"] = "{\"match\":\"/" + config.Match + "/\"}"
+			}
 			apiRequest("POST", reqUri, reqBody)
 		}
 	}
@@ -156,7 +163,6 @@ func makeReqBody() RequestBody {
 		"alertTreshold": "2",
 		"maxTime":       "5000",
 		"interval":      "120",
-		"pollerParams":  "{\"match\":\"/live/\"}",
 	}
 }
 
