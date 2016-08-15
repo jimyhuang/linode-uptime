@@ -156,6 +156,7 @@ func makeReqBody() RequestBody {
 		"alertTreshold": "2",
 		"maxTime":       "5000",
 		"interval":      "120",
+		"pollerParams":  "{\"match\":\"live\"}",
 	}
 }
 
