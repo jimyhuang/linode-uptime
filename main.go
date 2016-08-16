@@ -21,10 +21,10 @@ type configuration struct {
 	APIUri          string `gcfg:"uri"`
 	BasicAuthName   string `gcfg:"username"`
 	BasicAuthPasswd string `gcfg:"password"`
-	match           string `gcfg:"match"`
-	maxTime         string `gcfg:"maxTime"`
-	interval        string `gcfg:"interval"`
-	alertTreshold   string `gcfg:"alertTreshold"`
+	Match           string `gcfg:"match"`
+	MaxTime         string `gcfg:"maxTime"`
+	Interval        string `gcfg:"interval"`
+	AlertTreshold   string `gcfg:"alertTreshold"`
 }
 type Inventory struct {
 	Meta  map[string]map[string]map[string]string `json:"_meta"`
@@ -80,17 +80,17 @@ func main() {
 		reqBody := makeReqBody()
 		reqBody["name"] = label
 		reqBody["url"] = "http://" + node["host_public_ip"] + "/live/live.htm"
-		if config.match != "" {
-			reqBody["pollerParams"] = "{\"match\":\"/" + config.match + "/\"}"
+		if config.Match != "" {
+			reqBody["pollerParams"] = "{\"match\":\"/" + config.Match + "/\"}"
 		}
-		if config.maxTime != "" {
-			reqBody["maxTime"] = config.maxTime
+		if config.MaxTime != "" {
+			reqBody["maxTime"] = config.MaxTime
 		}
-		if config.interval != "" {
-			reqBody["interval"] = config.interval
+		if config.Interval != "" {
+			reqBody["interval"] = config.Interval
 		}
-		if config.alertTreshold != "" {
-			reqBody["alertTreshold"] = config.alertTreshold
+		if config.AlertTreshold != "" {
+			reqBody["alertTreshold"] = config.AlertTreshold
 		}
 		if ok == false {
 			fmt.Printf("N:%s\n", label)
