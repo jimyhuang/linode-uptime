@@ -21,7 +21,10 @@ type configuration struct {
 	APIUri          string `gcfg:"uri"`
 	BasicAuthName   string `gcfg:"username"`
 	BasicAuthPasswd string `gcfg:"password"`
-	Match           string `gcfg:"match"`
+	match           string `gcfg:"match"`
+	maxTime         string `gcfg:"maxTime"`
+	interval        string `gcfg:"interval"`
+	alertTreshold   string `gcfg:"alertTreshold"`
 }
 type Inventory struct {
 	Meta  map[string]map[string]map[string]string `json:"_meta"`
@@ -74,27 +77,30 @@ func main() {
 	for _, node := range inv.Meta["hostvars"] {
 		label := node["host_label"]
 		_, ok := uptimeCheck[label]
+		reqBody := makeReqBody()
+		reqBody["name"] = label
+		reqBody["url"] = "http://" + node["host_public_ip"] + "/live/live.htm"
+		if config.match != "" {
+			reqBody["pollerParams"] = "{\"match\":\"/" + config.match + "/\"}"
+		}
+		if config.maxTime != "" {
+			reqBody["maxTime"] = config.maxTime
+		}
+		if config.interval != "" {
+			reqBody["interval"] = config.interval
+		}
+		if config.alertTreshold != "" {
+			reqBody["alertTreshold"] = config.alertTreshold
+		}
 		if ok == false {
 			fmt.Printf("N:%s\n", label)
 			// PUT
 			reqUri := "checks"
-			reqBody := makeReqBody()
-			reqBody["name"] = label
-			reqBody["url"] = "http://" + node["host_public_ip"] + "/live/live.htm"
-			if config.Match != "" {
-				reqBody["pollerParams"] = "{\"match\":\"/" + config.Match + "/\"}"
-			}
 			apiRequest("PUT", reqUri, reqBody)
 		} else if uptimeCheck[label] != "" {
 			// POST
-			fmt.Printf("U:%s\n", uptimeCheck[label])
+			fmt.Printf("U:%s\n", label)
 			reqUri := "checks/" + uptimeCheck[label]
-			reqBody := makeReqBody()
-			reqBody["name"] = label
-			reqBody["url"] = "http://" + node["host_public_ip"] + "/live/live.htm"
-			if config.Match != "" {
-				reqBody["pollerParams"] = "{\"match\":\"/" + config.Match + "/\"}"
-			}
 			apiRequest("POST", reqUri, reqBody)
 		}
 	}
@@ -160,9 +166,9 @@ func makeReqBody() RequestBody {
 		"name":          "",
 		"url":           "http://",
 		"type":          "http",
-		"alertTreshold": "2",
-		"maxTime":       "5000",
-		"interval":      "120",
+		"maxTime":       "6000",
+		"interval":      "180",
+		"alertTreshold": "3",
 	}
 }
 

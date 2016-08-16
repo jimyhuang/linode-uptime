@@ -9,3 +9,12 @@ password = ""
 
 # match string between js.match(/string/)
 match = "live"
+
+# max connection time
+maxTime = "6000"
+
+# ping interval(second)
+interval = "180"
+
+# alert when ping failed
+alertTreshold = "3"
